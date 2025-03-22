@@ -56,7 +56,7 @@ public class TabManager {
     public static final List<Tab> tabs = new ArrayList<>();
     public static int currentPage = 0;
     public static Tab currentTab;
-    public static List<WidgetPosition> tabPositions;
+    public static List<WidgetPosition> tabPositions = new ArrayList<>();
     public static int holdTabCooldown = 0;
     public static boolean enabled = true;
     public static Map<BlockPos, RaycastCache> blockRaycastCache = new HashMap<>();
