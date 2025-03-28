@@ -31,7 +31,7 @@ public class InventoryTabsPlugin implements IMixinConfigPlugin {
             if (FabricLoader.INSTANCE.isModLoaded("connector") && FORGE_BANNED_MIXINS.contains(mixinClassName)) {
                 return false;
             }
-            if (!InventoryTabs.CONFIG.consistentContainers && (mixinClassName.contains("GenericContainer") || mixinClassName.contains("ShulkerBox"))) {
+            if (!InventoryTabs.CONFIG.consistentContainers && (mixinClassName.contains("GenericContainer") || mixinClassName.contains("ShulkerBoxScreen"))) {
                 return false;
             }
         }
