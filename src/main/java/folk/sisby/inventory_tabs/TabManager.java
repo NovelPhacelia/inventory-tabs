@@ -237,7 +237,7 @@ public class TabManager {
     }
 
     public static boolean isClickOutsideBounds(double mouseX, double mouseY) {
-        return !getPageButton(true).contains((int) mouseX, (int) mouseY) && !getPageButton(false).contains((int) mouseX, (int) mouseY) && tabPositions.stream().noneMatch(pos -> getTabArea(pos).contains((int) mouseX, (int) mouseY));
+        return tabPositions.isEmpty() || !getPageButton(true).contains((int) mouseX, (int) mouseY) && !getPageButton(false).contains((int) mouseX, (int) mouseY) && tabPositions.stream().noneMatch(pos -> getTabArea(pos).contains((int) mouseX, (int) mouseY));
     }
 
     public static boolean keyPressed(int keyCode, int scanCode, int modifiers) {
