@@ -1,4 +1,6 @@
 <!--suppress HtmlDeprecatedTag, XmlDeprecatedElement -->
+I have no idea how to use java, im gonna try it anyways.
+
 <center><img alt="screenshot" src="https://cdn.modrinth.com/data/VD1aynYU/images/7feef9e9ba223616e0462725ea7f5d860aea946f.png" /></center>
 
 <center>
