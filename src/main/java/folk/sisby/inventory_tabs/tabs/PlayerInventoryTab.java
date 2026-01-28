@@ -8,6 +8,7 @@ import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ProfileComponent;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
@@ -19,7 +20,7 @@ public class PlayerInventoryTab implements Tab {
 
     public PlayerInventoryTab() {
         itemStack = new ItemStack(Blocks.PLAYER_HEAD);
-        itemStack.set(DataComponentTypes.PROFILE, new ProfileComponent(MinecraftClient.getInstance().player.getGameProfile()));
+        itemStack.set(DataComponentTypes.PROFILE, ProfileComponent.ofStatic(MinecraftClient.getInstance().player.getGameProfile()));
     }
 
     @Override

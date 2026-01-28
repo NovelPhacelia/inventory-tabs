@@ -28,7 +28,7 @@ public class PlayerUtil {
     }
 
     public static boolean inRange(PlayerEntity player, Entity entity) {
-        if (entity.getPos().squaredDistanceTo(player.getEyePos()) > BLOCK_REACH_SQUARE) return false;
+        if (entity.squaredDistanceTo(player.getEyePos()) > BLOCK_REACH_SQUARE) return false;
         if (InventoryTabs.CONFIG.ignoreWalls) return true;
         EntityHitResult result = raycast(player, entity);
         return result != null && entity.equals(result.getEntity());
@@ -42,17 +42,33 @@ public class PlayerUtil {
         }
         blockOffsets.addAll(generateRandomVec3dList(9, new Vec3d(0.0D, 0.0D, 0.0D), new Vec3d(1.0D, 1.0D, 1.0D)));
         for (Vec3d offset : blockOffsets) {
-            BlockHitResult hitResult = player.getWorld().raycast(new RaycastContext(player.getEyePos(), Vec3d.of(pos).add(offset), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, player));
+            BlockHitResult hitResult = player.getEntityWorld().raycast(new RaycastContext(player.getEyePos(), Vec3d.of(pos).add(offset), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, player));
             if (hitResult.getType() != HitResult.Type.MISS && hitResult.getBlockPos().equals(pos)) {
                 TabManager.blockRaycastCache.computeIfAbsent(pos, p -> new RaycastCache()).hit(offset);
                 return hitResult;
             }
         }
-        return BlockHitResult.createMissed(player.getPos(), Direction.EAST, player.getBlockPos());
+        return BlockHitResult.createMissed(new Vec3d(player.getX(), player.getY(), player.getZ()), Direction.EAST, player.getBlockPos());
     }
 
-    public static EntityHitResult raycast(PlayerEntity player, Entity entity) {
-        return ProjectileUtil.raycast(player, player.getEyePos(), entity.getPos(), player.getBoundingBox().stretch(entity.getRotationVec(1.0F).multiply(REACH)).expand(1.0, 1.0, 1.0), e -> true, BLOCK_REACH_SQUARE);
+    //Rewrote raycast
+    public static EntityHitResult raycast(PlayerEntity player, Entity target) {
+        Vec3d start = player.getEyePos();
+        Vec3d end = target.getBoundingBox().getCenter(); // stable replacement for getPos()
+
+        // A box that covers the segment start->end (plus a little padding)
+        var box = player.getBoundingBox()
+                .stretch(end.subtract(start))
+                .expand(1.0, 1.0, 1.0);
+
+        return ProjectileUtil.raycast(
+                player,
+                start,
+                end,
+                box,
+                e -> e == target,          // only consider the target
+                BLOCK_REACH_SQUARE
+        );
     }
 
     public static List<Vec3d> generateRandomVec3dList(int count, Vec3d min, Vec3d max) {

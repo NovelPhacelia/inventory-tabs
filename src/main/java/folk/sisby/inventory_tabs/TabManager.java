@@ -19,7 +19,7 @@ import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.math.Rect2i;
 import net.minecraft.client.world.ClientWorld;
@@ -35,6 +35,9 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.client.input.KeyInput;
+import net.minecraft.client.option.KeyBinding;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -123,7 +126,7 @@ public class TabManager {
             ClientPlayerEntity player = MinecraftClient.getInstance().player;
             ClientPlayerInteractionManager interactionManager = MinecraftClient.getInstance().interactionManager;
             ClientPlayNetworkHandler networkHandler = MinecraftClient.getInstance().getNetworkHandler();
-            if (player != null && interactionManager != null && networkHandler != null && player.getWorld() instanceof ClientWorld world) {
+            if (player != null && interactionManager != null && networkHandler != null && player.getEntityWorld() instanceof ClientWorld world) {
                 if (!tab.shouldBeRemoved(world, false)) {
                     if (tab.isBuffered()) openTabImmediate(new PlayerInventoryTab(), player, interactionManager, world);
                     openTabImmediate(tab, player, interactionManager, world);
@@ -133,7 +136,7 @@ public class TabManager {
     }
 
     public static Tab guessOpenedTab(MinecraftClient client, HandledScreen<?> screen) {
-        World world = client.player.getWorld();
+        World world = client.player.getEntityWorld();
         // "Open Inventory" Guesses
         if (currentScreen instanceof InventoryScreen) return tabs.get(0);
         if (client.player.hasVehicle()) {
@@ -170,7 +173,7 @@ public class TabManager {
             }
         }
         // Hand Guesses
-        for (int slot : List.of(client.player.getInventory().selectedSlot, PlayerInventory.OFF_HAND_SLOT)) {
+        for (int slot : List.of(client.player.getInventory().getSelectedSlot(), PlayerInventory.OFF_HAND_SLOT)) {
             for (Tab tab : tabs) {
                 if (tab instanceof ItemTab it) {
                     if (slot == it.slot) {
@@ -242,14 +245,14 @@ public class TabManager {
     }
 
     public static boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (InventoryTabs.TOGGLE_TABS.matchesKey(keyCode, scanCode)) {
+        if (InventoryTabs.TOGGLE_TABS.matchesKey(new KeyInput(keyCode, scanCode, 1))) {
             enabled = !enabled;
             if (!enabled) MinecraftClient.getInstance().getToastManager().add(new ControlHintToast(Text.translatable("toast.inventory_tabs.disabled.title").formatted(Formatting.BOLD), InventoryTabs.TOGGLE_TABS));
         }
         if (isHidden() || isLocked()) return false;
-        if (holdTabCooldown <= 0 && InventoryTabs.NEXT_TAB.matchesKey(keyCode, scanCode)) {
+        if (holdTabCooldown <= 0 && InventoryTabs.NEXT_TAB.matchesKey(new KeyInput(keyCode, scanCode, 1))) {
             holdTabCooldown = InventoryTabs.CONFIG.holdTabCooldown;
-            if (Screen.hasShiftDown()) {
+            if ((modifiers & GLFW.GLFW_MOD_SHIFT) != 0) {
                 if (tabs.indexOf(currentTab) == 0) {
                     openTab(tabs.get(tabs.size() - 1));
                 } else {
@@ -304,13 +307,13 @@ public class TabManager {
         boolean active = left ? currentPage > 0 : currentPage < getMaximumPage();
         int u = BUTTON_WIDTH * (left ? 0 : 1);
         int v = BUTTON_HEIGHT * (active ? hovered ? 2 : 1 : 0);
-        drawContext.drawTexture(RenderLayer::getGuiTextured, BUTTONS_TEXTURE, rect.getX(), rect.getY(), u, v, rect.getWidth(), rect.getHeight(), 256, 256);
+        drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, BUTTONS_TEXTURE, rect.getX(), rect.getY(), u, v, rect.getWidth(), rect.getHeight(), 256, 256);
         if (hovered) drawContext.drawTooltip(MinecraftClient.getInstance().textRenderer, Text.literal((currentPage + 1) + "/" + (getMaximumPage() + 1)), (int) mouseX, (int) mouseY);
     }
 
     public static void playClick() {
         MinecraftClient.getInstance().getSoundManager()
-                .play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK.value(), 1.0F));
+                .play(PositionedSoundInstance.ui(SoundEvents.UI_BUTTON_CLICK.value(), 1.0F));
     }
 
     public static boolean isHidden() {

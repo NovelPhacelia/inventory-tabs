@@ -48,7 +48,7 @@ public class ItemTab implements Tab {
             ItemStack inSwappedSlot = player.getInventory().getStack(swappedSlot);
             if (ItemStack.areEqual(inSwappedSlot, swappedStack)) {
                 int slotIndex = handler.getSlotIndex(player.getInventory(), swappedSlot).getAsInt();
-                interactionManager.clickSlot(handler.syncId, slotIndex, player.getInventory().selectedSlot, SlotActionType.SWAP, player);
+                interactionManager.clickSlot(handler.syncId, slotIndex, player.getInventory().getSelectedSlot(), SlotActionType.SWAP, player);
             }
         }
     }
@@ -56,15 +56,15 @@ public class ItemTab implements Tab {
     @Override
     public void open(ClientPlayerEntity player, ClientWorld world, ScreenHandler handler, ClientPlayerInteractionManager interactionManager) {
         int slotIndex = handler.getSlotIndex(player.getInventory(), slot).getAsInt();
-        if (slotIndex != player.getInventory().selectedSlot) interactionManager.clickSlot(handler.syncId, slotIndex, player.getInventory().selectedSlot, SlotActionType.SWAP, player);
-        if (sneakInteract) player.networkHandler.sendPacket(new ClientCommandC2SPacket(player, ClientCommandC2SPacket.Mode.PRESS_SHIFT_KEY));
+        if (slotIndex != player.getInventory().getSelectedSlot()) interactionManager.clickSlot(handler.syncId, slotIndex, player.getInventory().getSelectedSlot(), SlotActionType.SWAP, player);
+        //Removed RELEASE_SHIFT_KEY
         interactionManager.interactItem(player, Hand.MAIN_HAND);
-        if (sneakInteract) player.networkHandler.sendPacket(new ClientCommandC2SPacket(player, ClientCommandC2SPacket.Mode.RELEASE_SHIFT_KEY));
-        if (unique && slotIndex != player.getInventory().selectedSlot) HandlerSlotUtil.mainHandSwapSlot = slot; // Can't swap back for non-uniques
+        //Removed RELEASE_SHIFT_KEY
+        if (unique && slotIndex != player.getInventory().getSelectedSlot()) HandlerSlotUtil.mainHandSwapSlot = slot; // Can't swap back for non-uniques
         if (!unique) {
             this.swappedSlot = this.slot;
             this.swappedStack = player.getInventory().getStack(this.slot);
-            this.slot = player.getInventory().selectedSlot;
+            this.slot = player.getInventory().getSelectedSlot();
         }
     }
 

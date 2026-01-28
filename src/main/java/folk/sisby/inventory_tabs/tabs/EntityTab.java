@@ -37,7 +37,7 @@ public class EntityTab implements Tab {
     @Override
     public void open(ClientPlayerEntity player, ClientWorld world, ScreenHandler handler, ClientPlayerInteractionManager interactionManager) {
         player.networkHandler.sendPacket(PlayerInteractEntityC2SPacket.interact(entity, sneakInteract, player.getActiveHand()));
-        if (sneakInteract) player.networkHandler.sendPacket(new ClientCommandC2SPacket(player, ClientCommandC2SPacket.Mode.RELEASE_SHIFT_KEY));
+        //Removed RELEASE_SHIFT_KEY
     }
 
     @Override

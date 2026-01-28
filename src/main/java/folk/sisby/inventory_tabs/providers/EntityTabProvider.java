@@ -33,8 +33,8 @@ public abstract class EntityTabProvider extends RegistryTabProvider<EntityType<?
 
     @Override
     public void addAvailableTabs(ClientPlayerEntity player, Consumer<Tab> addTab) {
-        World world = player.getWorld();
-        for (Entity entity : world.getNonSpectatingEntities(Entity.class, Box.of(player.getPos(), PlayerUtil.REACH * 2, PlayerUtil.REACH * 2, PlayerUtil.REACH * 2))) {
+        World world = player.getEntityWorld();
+        for (Entity entity : world.getNonSpectatingEntities(Entity.class, Box.of(player.getSyncedPos(), PlayerUtil.REACH * 2, PlayerUtil.REACH * 2, PlayerUtil.REACH * 2))) {
             EntityType<?> type = entity.getType();
             if (!values.contains(type) && !failedMatches.contains(type)) {
                 if (TabProviders.warmEntities.contains(type) && warmMatches.values().stream().anyMatch(t -> t.test(entity))) {

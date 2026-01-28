@@ -32,13 +32,13 @@ public class InventoryTabs implements ClientModInitializer {
                 "key.inventory_tabs.key.next_tab",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_TAB,
-                "key.categories.inventory"
+                KeyBinding.Category.INVENTORY
         ));
         TOGGLE_TABS = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.inventory_tabs.key.toggle_tabs",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_LEFT_BRACKET,
-                "key.categories.inventory"
+                KeyBinding.Category.INVENTORY
         ));
     }
 }

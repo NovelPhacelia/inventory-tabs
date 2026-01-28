@@ -28,7 +28,7 @@ public abstract class BlockTabProvider extends RegistryTabProvider<Block> {
 
     @Override
     public void addAvailableTabs(ClientPlayerEntity player, Consumer<Tab> addTab) {
-        World world = player.getWorld();
+        World world = player.getEntityWorld();
         Set<Block> blocksAdded = new HashSet<>();
         for (BlockPos pos : BlockUtil.getBlocksInRadius(player.getBlockPos(), PlayerUtil.REACH)) {
             Block block = world.getBlockState(pos).getBlock();

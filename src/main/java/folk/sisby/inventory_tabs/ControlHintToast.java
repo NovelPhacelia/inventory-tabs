@@ -4,7 +4,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.toast.Toast;
 import net.minecraft.client.toast.ToastManager;
 import net.minecraft.text.Text;
@@ -42,7 +42,7 @@ public class ControlHintToast implements Toast {
 
 	@Override
 	public void draw(DrawContext context, TextRenderer textRenderer, long startTime) {
-		context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURE, 0, 0, getWidth(), getHeight());
+		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, getWidth(), getHeight());
 		context.drawText(textRenderer, title, (getWidth() - titleWidth) / 2, 7, 0xFFFFFF, false);
 		context.drawText(textRenderer, keyHint, (getWidth() - hintWidth) / 2, 18, 0xFFFFFF, false);
 	}
