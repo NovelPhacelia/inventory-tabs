@@ -18,6 +18,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import net.minecraft.client.gui.Click;
+import net.minecraft.client.input.KeyInput;
 
 @Mixin(HandledScreen.class)
 public abstract class MixinHandledScreen extends Screen implements InventoryTabsScreen {
@@ -46,34 +48,34 @@ public abstract class MixinHandledScreen extends Screen implements InventoryTabs
     }
 
     @Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)
-    public void mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> callbackInfo) {
+    public void mouseClicked(Click click, boolean doubled, CallbackInfoReturnable<Boolean> callbackInfo) {
         if (!inventoryTabs$allowTabs) return;
-        if (TabManager.mouseClicked(mouseX, mouseY, button)) {
+        if (TabManager.mouseClicked(click.x(), click.y(), click.button())) {
             callbackInfo.setReturnValue(true);
             callbackInfo.cancel();
         }
     }
 
     @Inject(method = "mouseReleased", at = @At("HEAD"), cancellable = true)
-    public void mouseReleased(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> callbackInfo) {
+    public void mouseReleased(Click click, CallbackInfoReturnable<Boolean> callbackInfo) {
         if (!inventoryTabs$allowTabs) return;
-        if (TabManager.mouseReleased(mouseX, mouseY, button)) {
+        if (TabManager.mouseReleased(click.x(), click.y(), click.button())) {
             callbackInfo.setReturnValue(true);
             callbackInfo.cancel();
         }
     }
 
     @Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
-    public void keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> callbackInfo) {
+    public void keyPressed(KeyInput input, CallbackInfoReturnable<Boolean> callbackInfo) {
         if (!inventoryTabs$allowTabs) return;
-        if (TabManager.keyPressed(keyCode, scanCode, modifiers)) {
+        if (TabManager.keyPressed(input.key(), input.scancode(), input.modifiers())) {
             callbackInfo.setReturnValue(true);
             callbackInfo.cancel();
         }
     }
 
     @Inject(method = "isClickOutsideBounds", at = @At("RETURN"), cancellable = true)
-    protected void isClickOutsideBounds(double mouseX, double mouseY, int left, int top, int button, CallbackInfoReturnable<Boolean> cir) {
+    protected void isClickOutsideBounds(double mouseX, double mouseY, int left, int top, CallbackInfoReturnable<Boolean> cir) {
         if (inventoryTabs$allowTabs && cir.getReturnValue()) {
             cir.setReturnValue(TabManager.isClickOutsideBounds(mouseX, mouseY));
         }

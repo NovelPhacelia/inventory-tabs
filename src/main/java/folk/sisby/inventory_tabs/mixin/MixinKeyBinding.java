@@ -24,8 +24,9 @@ public class MixinKeyBinding {
 	@Shadow @Final private static Map<String, KeyBinding> KEYS_BY_ID;
 	@Unique private static final Multimap<InputUtil.Key, KeyBinding> KEYS_TO_BINDINGS = ArrayListMultimap.create();
 
-	@Inject(method = "<init>(Ljava/lang/String;Lnet/minecraft/client/util/InputUtil$Type;ILjava/lang/String;)V", at = @At("TAIL"))
-	private void saveConflictedBinds(String translationKey, InputUtil.Type type, int code, String category, CallbackInfo ci) {
+	//Removed descriptor
+	@Inject(method = "<init>", at = @At("TAIL"))
+	private void saveConflictedBinds(CallbackInfo ci) {
 		KEYS_TO_BINDINGS.put(boundKey, (KeyBinding) (Object) this);
 	}
 
