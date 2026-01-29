@@ -31,11 +31,13 @@ public abstract class MixinHandledScreen extends Screen implements InventoryTabs
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void checkSupported(ScreenHandler handler, PlayerInventory inventory, Text title, CallbackInfo ci) {
+        //System.out.println("[InventoryTabs DEBUG] MixinHandledScreen checkSupported called: " + this.getClass().getName());
         inventoryTabs$allowTabs = ScreenSupport.allowTabs(this);
     }
     
     @Inject(method = "init", at = @At("RETURN"))
     private void init(CallbackInfo callbackInfo) {
+        //System.out.println("[InventoryTabs DEBUG] MixinHandledScreen init called: " + this.getClass().getName());
         if (!inventoryTabs$allowTabs) return;
         HandledScreen<?> self = (HandledScreen<?>) (Object) this;
         TabManager.initScreen(client, self);
@@ -49,6 +51,7 @@ public abstract class MixinHandledScreen extends Screen implements InventoryTabs
 
     @Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)
     public void mouseClicked(Click click, boolean doubled, CallbackInfoReturnable<Boolean> callbackInfo) {
+        //System.out.println("[InventoryTabs DEBUG] MixinHandledScreen mouseClicked called: " + this.getClass().getName());
         if (!inventoryTabs$allowTabs) return;
         if (TabManager.mouseClicked(click.x(), click.y(), click.button())) {
             callbackInfo.setReturnValue(true);
@@ -58,6 +61,7 @@ public abstract class MixinHandledScreen extends Screen implements InventoryTabs
 
     @Inject(method = "mouseReleased", at = @At("HEAD"), cancellable = true)
     public void mouseReleased(Click click, CallbackInfoReturnable<Boolean> callbackInfo) {
+        //System.out.println("[InventoryTabs DEBUG] MixinHandledScreen mouseReleased called: " + this.getClass().getName());
         if (!inventoryTabs$allowTabs) return;
         if (TabManager.mouseReleased(click.x(), click.y(), click.button())) {
             callbackInfo.setReturnValue(true);
@@ -67,6 +71,7 @@ public abstract class MixinHandledScreen extends Screen implements InventoryTabs
 
     @Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
     public void keyPressed(KeyInput input, CallbackInfoReturnable<Boolean> callbackInfo) {
+        //System.out.println("[InventoryTabs DEBUG] MixinHandledScreen keyPressed called: " + this.getClass().getName());
         if (!inventoryTabs$allowTabs) return;
         if (TabManager.keyPressed(input.key(), input.scancode(), input.modifiers())) {
             callbackInfo.setReturnValue(true);
@@ -76,6 +81,7 @@ public abstract class MixinHandledScreen extends Screen implements InventoryTabs
 
     @Inject(method = "isClickOutsideBounds", at = @At("RETURN"), cancellable = true)
     protected void isClickOutsideBounds(double mouseX, double mouseY, int left, int top, CallbackInfoReturnable<Boolean> cir) {
+        //System.out.println("[InventoryTabs DEBUG] MixinHandledScreen isClickOutsideBounds called: " + this.getClass().getName());
         if (inventoryTabs$allowTabs && cir.getReturnValue()) {
             cir.setReturnValue(TabManager.isClickOutsideBounds(mouseX, mouseY));
         }
@@ -83,6 +89,7 @@ public abstract class MixinHandledScreen extends Screen implements InventoryTabs
 
 	@ModifyExpressionValue(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;getDisplayName()Lnet/minecraft/text/Text;"))
 	private Text removeCompactPlayerInventoryTitle(Text original) {
+        //System.out.println("[InventoryTabs DEBUG] MixinHandledScreen removeCompactPlayerInventoryTitle called: " + this.getClass().getName());
 		HandledScreen<?> self = (HandledScreen<?>) (Object) this;
 		if (InventoryTabs.CONFIG.compactLargeContainers && self.getScreenHandler() instanceof GenericContainerScreenHandler gcsh && gcsh.getRows() == 6) {
 			return Text.empty();
