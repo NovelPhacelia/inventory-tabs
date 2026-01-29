@@ -19,13 +19,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(RecipeBookScreen.class)
 public abstract class MixinRecipeBookScreen {
-    @Unique Boolean inventoryTabs$allowTabs = true;
+    @Unique Boolean inventoryTabs$allowTabs = false;
 
-    // @Inject(method = "<init>", at = @At("TAIL"))
-    // private void checkSupported(ScreenHandler handler, PlayerInventory inventory, Text title, CallbackInfo ci) {
-    //     System.out.println("[InventoryTabs DEBUG] MixinHandledScreen checkSupported called: " + this.getClass().getName());
-    //     inventoryTabs$allowTabs = ScreenSupport.allowTabs(this);
+    // protected MixinRecipeScreen(Text title) {
+    // super(title);
     // }
+
+    @Inject(method = "init", at = @At("TAIL"))
+    private void inventorytabs$checkSupported(CallbackInfo ci) {
+        inventoryTabs$allowTabs = ScreenSupport.allowTabs((Screen)(Object)this);
+    }
 
     @Inject(method = "render", at = @At("TAIL"))
     protected void render(DrawContext drawContext, int mouseX, int mouseY, float delta, CallbackInfo ci) {
@@ -35,7 +38,7 @@ public abstract class MixinRecipeBookScreen {
 
     // @Inject(method = "isClickOutsideBounds", at = @At("RETURN"), cancellable = true)
     // protected void isClickOutsideBounds(double mouseX, double mouseY, int left, int top, CallbackInfoReturnable<Boolean> cir) {
-    //     System.out.println("[InventoryTabs DEBUG] MixinHandledScreen isClickOutsideBounds called: " + this.getClass().getName());
+    //     System.out.println("[InventoryTabs DEBUG] MixinRecipeBookScreen isClickOutsideBounds called: " + this.getClass().getName());
     //     if (inventoryTabs$allowTabs && cir.getReturnValue()) {
     //         cir.setReturnValue(TabManager.isClickOutsideBounds(mouseX, mouseY));
     //     }
