@@ -3,7 +3,7 @@
 	"minVersion": "0.8",
 	"package": "folk.sisby.inventory_tabs.mixin",
 	"plugin": "folk.sisby.inventory_tabs.mixin.InventoryTabsPlugin",
-	"refmap": "inventory_tabs.refmap.json",
+	"refmap": "inventory-tabs-refmap.json",
 	"compatibilityLevel": "JAVA_16",
 	"client": [
 		"HandledScreenAccessor",
