@@ -20,6 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.input.KeyInput;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 @Mixin(HandledScreen.class)
 public abstract class MixinHandledScreen extends Screen implements InventoryTabsScreen {
